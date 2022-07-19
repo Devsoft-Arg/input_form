@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+import 'package:input_form/input_form.dart';
+
+void main() => runApp(const InputFormApp());
+
+class InputFormApp extends StatelessWidget {
+  const InputFormApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'InputForm App',
+      home: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: const Text('InputForm App'),
+        ),
+        body: InputForm(
+          decoration: InputFormDecoration(
+              backgroundColor: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              selectedBorderColor: Colors.lightGreen,
+              buttonBackgroundColor: Colors.lightGreen,
+              nullErrorText: 'You must complete the field'),
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 22),
+            children: [
+              const SizedBox(height: 12),
+              const TextInputField(
+                name: 'text',
+                title: 'Text',
+                hint: 'Enter text',
+                icon: Icons.home,
+              ),
+              const SizedBox(height: 12),
+              const DropdownInputField(
+                name: 'dropdown',
+                values: ['Option 1', 'Option 2', 'Option 3'],
+                title: 'Dropdown',
+                hint: 'Enter any of the options',
+                icon: Icons.list_alt,
+              ),
+              const SizedBox(height: 12),
+              ImageInputField(
+                name: 'images',
+                title: 'Images',
+                hint: 'There are no selected images',
+                minFiles: 2,
+                minFilesErrorText: 'Must contain at least two images',
+                selectedHint: (q) =>
+                    'You have selected $q image${q > 1 ? 's' : ''}',
+                icon: Icons.image,
+              ),
+              const SizedBox(height: 12),
+              FileInputField(
+                name: 'files',
+                title: 'Files',
+                hint: 'No files selected',
+                minFiles: 2,
+                minFilesErrorText: 'Must contain at least two files',
+                selectedHint: (q) =>
+                    'You have selected $q file${q > 1 ? 's' : ''}',
+                icon: Icons.file_copy,
+              ),
+              const SizedBox(height: 22),
+              const TextFormButton(
+                text: 'Tap',
+                onTap: print,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
