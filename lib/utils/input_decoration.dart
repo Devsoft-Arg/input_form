@@ -12,7 +12,7 @@ InputDecoration getInputDecoration({
     contentPadding: padding,
     hintText: hintText,
     filled: true,
-    fillColor: decoration.backgroundColor,
+    fillColor: decoration.backgroundColor ?? theme.scaffoldBackgroundColor,
     hintStyle: decoration.hintStyle ??
         theme.textTheme.titleMedium?.copyWith(
           color: decoration.hintColor,
