@@ -8,9 +8,8 @@ import '../utils/input_decoration.dart';
 import 'title_form.dart';
 
 /// Input field for text
-class TextInputField extends StatefulWidget {
+class TextInputField<T> extends StatefulWidget {
   const TextInputField({
-    Key? key,
     required this.name,
     required this.title,
     required this.hint,
@@ -20,11 +19,15 @@ class TextInputField extends StatefulWidget {
     this.validator,
     this.showIfAnd,
     this.showIfOr,
+    super.key,
   })  : assert(
           showIfAnd == null || showIfOr == null,
           'Passing nullableIfAnd and nullableIfOr at the same time is not allowed.',
         ),
-        super(key: key);
+        assert(
+          T == String || T == int || T == double,
+          'Passing types other than String, int, or double is not allowed.',
+        );
 
   /// Name of the value in the map returned in [TextFormButton].
   final String name;
@@ -64,10 +67,10 @@ class TextInputField extends StatefulWidget {
   final List<Condition>? showIfOr;
 
   @override
-  State<TextInputField> createState() => _TextInputFieldState();
+  State<TextInputField> createState() => _TextInputFieldState<T>();
 }
 
-class _TextInputFieldState extends State<TextInputField> {
+class _TextInputFieldState<T> extends State<TextInputField> {
   bool hidden = true;
 
   @override
@@ -75,6 +78,9 @@ class _TextInputFieldState extends State<TextInputField> {
     final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();
     final decoration = inputProvider.decoration;
+    final controller = TextEditingController(
+      text: inputProvider.data[widget.name],
+    );
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(
@@ -103,22 +109,33 @@ class _TextInputFieldState extends State<TextInputField> {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: TextFormField(
+              controller: controller,
               style: decoration.textStyle ?? theme.textTheme.titleMedium,
-              obscureText:
-                  hidden && widget.type == TextInputType.visiblePassword,
+              obscureText: hidden && _isPasswordType(),
               keyboardType: widget.type,
               textInputAction: getTextInputAction(widget.type),
               textCapitalization: getTextCapitalization(widget.type),
               minLines: 1,
-              maxLines: 10,
-              validator: (text) => _validator(text, decoration.nullErrorText),
-              onChanged: (text) => inputProvider.setData(widget.name, text),
+              maxLines: _isPasswordType() ? 1 : 10,
+              validator: (text) => _validator(text, inputProvider),
+              onChanged: (text) => _onChanged(text, inputProvider),
               onEditingComplete: () => FocusScope.of(context).nextFocus(),
               decoration: getInputDecoration(
                 hintText: widget.hint,
                 prefixIcon: widget.icon,
                 theme: theme,
                 decoration: decoration,
+              ).copyWith(
+                suffixIcon: _isPasswordType()
+                    ? GestureDetector(
+                        onTap: () => setState(() => hidden = !hidden),
+                        child: Icon(
+                          hidden
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                        ),
+                      )
+                    : null,
               ),
             ),
           ),
@@ -128,10 +145,24 @@ class _TextInputFieldState extends State<TextInputField> {
     );
   }
 
-  String? _validator(String? text, String? nullErrorText) {
+  void _onChanged(String text, InputProvider inputProvider) {
+    if (T == int) {
+      inputProvider.setData(widget.name, int.tryParse(text));
+    } else if (T == double) {
+      inputProvider.setData(widget.name, double.tryParse(text));
+    } else {
+      inputProvider.setData(widget.name, text);
+    }
+  }
+
+  String? _validator(String? text, InputProvider inputProvider) {
+    final decoration = inputProvider.decoration;
+    final data = inputProvider.data;
     if (widget.nullable) return null;
 
-    if (text == null || text == '') return nullErrorText;
+    if (text == null || text == '') return decoration.nullErrorText;
+
+    if (data[widget.name] == null) return decoration.notValidErrorText;
 
     final validator = widget.validator?.call(text);
     if (validator != null) return validator;
@@ -155,4 +186,6 @@ class _TextInputFieldState extends State<TextInputField> {
       return TextInputAction.next;
     }
   }
+
+  bool _isPasswordType() => widget.type == TextInputType.visiblePassword;
 }
