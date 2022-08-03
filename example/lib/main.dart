@@ -25,54 +25,60 @@ class InputFormApp extends StatelessWidget {
             nullErrorText: 'You must complete the field',
             notValidErrorText: 'Not valid text',
           ),
+          data: {
+            'text': 10.0,
+          },
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 22),
             children: [
               const SizedBox(height: 12),
-              TextInputField<String>(
+              TextInputField<double>(
                 name: 'text',
                 title: 'Text',
                 hint: 'Enter text',
                 icon: Icons.home,
+                type: TextInputType.number,
               ),
               const SizedBox(height: 12),
-              DropdownInputField<int>(
-                name: 'dropdown',
-                values: [
-                  DropdownItem(1, 'Uno'),
-                  DropdownItem(2, 'Dos'),
-                  DropdownItem(3, 'Tres'),
-                ],
-                title: 'Dropdown',
-                hint: 'Enter any of the options',
-                icon: Icons.list_alt,
-              ),
-              const SizedBox(height: 12),
-              ImageInputField(
-                name: 'images',
-                title: 'Images',
-                hint: 'There are no selected images',
-                minFiles: 2,
-                minFilesErrorText: 'Must contain at least two images',
-                selectedHint: (q) =>
-                    'You have selected $q image${q > 1 ? 's' : ''}',
-                icon: Icons.image,
-              ),
-              const SizedBox(height: 12),
-              FileInputField(
-                name: 'files',
-                title: 'Files',
-                hint: 'No files selected',
-                minFiles: 2,
-                minFilesErrorText: 'Must contain at least two files',
-                selectedHint: (q) =>
-                    'You have selected $q file${q > 1 ? 's' : ''}',
-                icon: Icons.file_copy,
-              ),
-              const SizedBox(height: 22),
-              const TextFormButton(
+              // DropdownInputField<int>(
+              //   name: 'dropdown',
+              //   values: [
+              //     DropdownItem(1, 'Uno'),
+              //     DropdownItem(2, 'Dos'),
+              //     DropdownItem(3, 'Tres'),
+              //   ],
+              //   title: 'Dropdown',
+              //   hint: 'Enter any of the options',
+              //   icon: Icons.list_alt,
+              // ),
+              // const SizedBox(height: 12),
+              // ImageInputField(
+              //   name: 'images',
+              //   title: 'Images',
+              //   hint: 'There are no selected images',
+              //   minFiles: 2,
+              //   minFilesErrorText: 'Must contain at least two images',
+              //   selectedHint: (q) =>
+              //       'You have selected $q image${q > 1 ? 's' : ''}',
+              //   icon: Icons.image,
+              // ),
+              // const SizedBox(height: 12),
+              // FileInputField(
+              //   name: 'files',
+              //   title: 'Files',
+              //   hint: 'No files selected',
+              //   minFiles: 2,
+              //   minFilesErrorText: 'Must contain at least two files',
+              //   selectedHint: (q) =>
+              //       'You have selected $q file${q > 1 ? 's' : ''}',
+              //   icon: Icons.file_copy,
+              // ),
+              // const SizedBox(height: 22),
+              TextFormButton(
                 text: 'Tap',
-                onTap: print,
+                onTap: (data) => data.forEach((key, value) {
+                  print(value.runtimeType);
+                }),
               ),
             ],
           ),
