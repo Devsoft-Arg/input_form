@@ -5,12 +5,12 @@ import 'package:provider/provider.dart';
 
 import '../models/condition.dart';
 import '../utils/can_show.dart';
+import 'custom_dropdown_button.dart' as cs;
 import 'title_form.dart';
 
 /// Dropdown input field with options
-class DropdownInputField extends StatefulWidget {
+class DropdownInputField<T> extends StatefulWidget {
   const DropdownInputField({
-    Key? key,
     required this.name,
     required this.title,
     required this.hint,
@@ -19,11 +19,15 @@ class DropdownInputField extends StatefulWidget {
     this.nullable = false,
     this.showIfAnd,
     this.showIfOr,
+    super.key,
   })  : assert(
           showIfAnd == null || showIfOr == null,
           'Passing nullableIfAnd and nullableIfOr at the same time is not allowed.',
         ),
-        super(key: key);
+        assert(
+          T == String || T == int || T == double,
+          'Passing types other than String, int, or double is not allowed.',
+        );
 
   /// Name of the value in the map returned in [TextFormButton].
   final String name;
@@ -38,7 +42,7 @@ class DropdownInputField extends StatefulWidget {
   final IconData icon;
 
   /// Values to be show as options in the dropdown list.
-  final List<String> values;
+  final List<DropdownItem<T>> values;
 
   /// Allows that it is not necessary to select any [values].
   ///
@@ -54,11 +58,11 @@ class DropdownInputField extends StatefulWidget {
   final List<Condition>? showIfOr;
 
   @override
-  State<DropdownInputField> createState() => _DropdownInputFieldState();
+  State<DropdownInputField> createState() => _DropdownInputFieldState<T>();
 }
 
-class _DropdownInputFieldState extends State<DropdownInputField> {
-  String? value;
+class _DropdownInputFieldState<T> extends State<DropdownInputField> {
+  T? value;
 
   @override
   Widget build(BuildContext context) {
@@ -83,13 +87,12 @@ class _DropdownInputFieldState extends State<DropdownInputField> {
         return const SizedBox.shrink();
       }
     }
-
     return Stack(
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 8),
-          child: DropdownButtonFormField<String>(
-            alignment: Alignment.bottomCenter,
+          child: cs.CustomDropdownButtonFormField<T>(
+            borderRadius: decoration.borderRadius,
             value: value,
             style: decoration.textStyle ?? theme.textTheme.titleMedium,
             decoration: getInputDecoration(
@@ -99,12 +102,12 @@ class _DropdownInputFieldState extends State<DropdownInputField> {
               decoration: decoration,
               padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
             ),
-            validator: (text) => _validator(text, inputProvider),
-            onChanged: (String? value) => _onChanged(value, inputProvider),
-            items: widget.values.map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
+            validator: (T? text) => _validator(text, inputProvider),
+            onChanged: (T? value) => _onChanged(value, inputProvider),
+            items: widget.values.map<cs.DropdownMenuItem<T>>((item) {
+              return cs.DropdownMenuItem<T>(
+                value: item.key,
+                child: Text(item.value),
               );
             }).toList(),
           ),
@@ -114,15 +117,15 @@ class _DropdownInputFieldState extends State<DropdownInputField> {
     );
   }
 
-  void _onChanged(String? newValue, InputProvider inputProvider) {
+  void _onChanged(T? newValue, InputProvider inputProvider) {
     FocusScope.of(context).nextFocus();
     setState(() {
-      value = newValue!;
+      value = newValue;
       inputProvider.setData(widget.name, value);
     });
   }
 
-  String? _validator(String? text, InputProvider inputProvider) {
+  String? _validator(T? text, InputProvider inputProvider) {
     if (widget.nullable) return null;
 
     if (text == null || text == '') {
@@ -131,4 +134,11 @@ class _DropdownInputFieldState extends State<DropdownInputField> {
 
     return null;
   }
+}
+
+class DropdownItem<T> {
+  final T key;
+  final String value;
+
+  DropdownItem(this.key, this.value);
 }
