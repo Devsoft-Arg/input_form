@@ -65,6 +65,17 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
   T? value;
 
   @override
+  void didChangeDependencies() {
+    final data = context.read<InputProvider>().data;
+    final initialValue = data[widget.name];
+    final values = widget.values.map((e) => e.key);
+    if (values.contains(initialValue)) {
+      value = initialValue;
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();

@@ -27,6 +27,7 @@ class InputFormApp extends StatelessWidget {
           ),
           data: {
             'text': 10.0,
+            'dropdown': 10,
           },
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -40,17 +41,17 @@ class InputFormApp extends StatelessWidget {
                 type: TextInputType.number,
               ),
               const SizedBox(height: 12),
-              // DropdownInputField<int>(
-              //   name: 'dropdown',
-              //   values: [
-              //     DropdownItem(1, 'Uno'),
-              //     DropdownItem(2, 'Dos'),
-              //     DropdownItem(3, 'Tres'),
-              //   ],
-              //   title: 'Dropdown',
-              //   hint: 'Enter any of the options',
-              //   icon: Icons.list_alt,
-              // ),
+              DropdownInputField<int>(
+                name: 'dropdown',
+                values: [
+                  DropdownItem(1, 'Uno'),
+                  DropdownItem(2, 'Dos'),
+                  DropdownItem(3, 'Tres'),
+                ],
+                title: 'Dropdown',
+                hint: 'Enter any of the options',
+                icon: Icons.list_alt,
+              ),
               // const SizedBox(height: 12),
               // ImageInputField(
               //   name: 'images',
