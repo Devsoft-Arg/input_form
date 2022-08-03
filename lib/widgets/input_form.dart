@@ -6,33 +6,33 @@ import '../providers/input_provider.dart';
 
 /// Form that must be above the input fields
 class InputForm extends StatelessWidget {
-  InputForm({
-    Key? key,
-    this.data,
+  const InputForm({
     required this.child,
-    required this.decoration,
-  }) : super(key: key);
+    this.data,
+    this.decoration,
+    super.key,
+  });
 
   /// Widget child.
   final Widget child;
 
-  /// The decoration for form inputs.
-  final InputFormDecoration decoration;
-
   /// Initial data that is passed to the input fields.
   final Map<String, dynamic>? data;
 
-  final formKey = GlobalKey<FormState>();
+  /// The decoration for form inputs.
+  final InputFormDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
+
     return Form(
       key: formKey,
       child: ChangeNotifierProvider(
         create: (_) => InputProvider(
           formKey: formKey,
           data: data ?? {},
-          decoration: decoration,
+          decoration: decoration ?? InputFormDecoration(),
         ),
         child: child,
       ),
