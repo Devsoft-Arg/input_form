@@ -78,9 +78,11 @@ class _TextInputFieldState<T> extends State<TextInputField> {
     final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();
     final decoration = inputProvider.decoration;
-    final controller = TextEditingController(
-      text: '${inputProvider.data[widget.name]}',
-    );
+    final initialValue = inputProvider.data[widget.name];
+    final controller = TextEditingController();
+    if (initialValue != null) {
+      controller.text = initialValue;
+    }
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(

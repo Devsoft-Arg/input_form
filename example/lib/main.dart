@@ -25,9 +25,9 @@ class InputFormApp extends StatelessWidget {
             nullErrorText: 'You must complete the field',
             notValidErrorText: 'Not valid text',
           ),
-          data: {
+          data: const {
             'text': 10.0,
-            'dropdown': 10,
+            'dropdown': 1,
           },
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 22),
