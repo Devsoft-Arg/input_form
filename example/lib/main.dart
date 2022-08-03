@@ -18,25 +18,31 @@ class InputFormApp extends StatelessWidget {
         ),
         body: InputForm(
           decoration: InputFormDecoration(
-              backgroundColor: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              selectedBorderColor: Colors.lightGreen,
-              buttonBackgroundColor: Colors.lightGreen,
-              nullErrorText: 'You must complete the field'),
+            backgroundColor: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            selectedBorderColor: Colors.lightGreen,
+            buttonBackgroundColor: Colors.lightGreen,
+            nullErrorText: 'You must complete the field',
+            notValidErrorText: 'Not valid text',
+          ),
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 22),
             children: [
               const SizedBox(height: 12),
-              const TextInputField(
+              TextInputField<String>(
                 name: 'text',
                 title: 'Text',
                 hint: 'Enter text',
                 icon: Icons.home,
               ),
               const SizedBox(height: 12),
-              const DropdownInputField(
+              DropdownInputField<int>(
                 name: 'dropdown',
-                values: ['Option 1', 'Option 2', 'Option 3'],
+                values: [
+                  DropdownItem(1, 'Uno'),
+                  DropdownItem(2, 'Dos'),
+                  DropdownItem(3, 'Tres'),
+                ],
                 title: 'Dropdown',
                 hint: 'Enter any of the options',
                 icon: Icons.list_alt,
