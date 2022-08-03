@@ -106,7 +106,8 @@ class _FileInputFieldState extends State<FileInputField> {
                 height: 59,
                 margin: const EdgeInsets.only(top: 8),
                 decoration: BoxDecoration(
-                  color: decoration.backgroundColor,
+                  color: decoration.backgroundColor ??
+                      theme.scaffoldBackgroundColor,
                   border: Border.all(
                     color: state.hasError
                         ? decoration.errorBorderColor
