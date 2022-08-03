@@ -18,7 +18,7 @@ class TitleForm extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(left: 43),
       padding: const EdgeInsets.symmetric(horizontal: 7),
-      color: decoration.backgroundColor,
+      color: decoration.backgroundColor ?? theme.scaffoldBackgroundColor,
       child: Text(
         title,
         style: decoration.titleStyle ??
