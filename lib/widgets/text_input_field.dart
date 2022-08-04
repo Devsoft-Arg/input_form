@@ -81,7 +81,7 @@ class _TextInputFieldState<T> extends State<TextInputField> {
     final initialValue = inputProvider.data[widget.name];
     final controller = TextEditingController();
     if (initialValue != null) {
-      controller.text = initialValue;
+      controller.text = '$initialValue';
     }
 
     if (widget.showIfAnd != null) {
