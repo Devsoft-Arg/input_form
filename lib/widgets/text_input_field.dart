@@ -106,43 +106,46 @@ class _TextInputFieldState<T> extends State<TextInputField> {
       data: theme.copyWith(
         primaryColor: decoration.selectedIconColor,
       ),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: TextFormField(
-              controller: controller,
-              style: decoration.textStyle ?? theme.textTheme.titleMedium,
-              obscureText: hidden && _isPasswordType(),
-              keyboardType: widget.type,
-              textInputAction: getTextInputAction(widget.type),
-              textCapitalization: getTextCapitalization(widget.type),
-              minLines: 1,
-              maxLines: _isPasswordType() ? 1 : 10,
-              validator: (text) => _validator(text, inputProvider),
-              onChanged: (text) => _onChanged(text, inputProvider),
-              onEditingComplete: () => FocusScope.of(context).nextFocus(),
-              decoration: getInputDecoration(
-                hintText: widget.hint,
-                prefixIcon: widget.icon,
-                theme: theme,
-                decoration: decoration,
-              ).copyWith(
-                suffixIcon: _isPasswordType()
-                    ? GestureDetector(
-                        onTap: () => setState(() => hidden = !hidden),
-                        child: Icon(
-                          hidden
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                        ),
-                      )
-                    : null,
+      child: Padding(
+        padding: decoration.inputPadding,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: TextFormField(
+                controller: controller,
+                style: decoration.textStyle ?? theme.textTheme.titleMedium,
+                obscureText: hidden && _isPasswordType(),
+                keyboardType: widget.type,
+                textInputAction: getTextInputAction(widget.type),
+                textCapitalization: getTextCapitalization(widget.type),
+                minLines: 1,
+                maxLines: _isPasswordType() ? 1 : 10,
+                validator: (text) => _validator(text, inputProvider),
+                onChanged: (text) => _onChanged(text, inputProvider),
+                onEditingComplete: () => FocusScope.of(context).nextFocus(),
+                decoration: getInputDecoration(
+                  hintText: widget.hint,
+                  prefixIcon: widget.icon,
+                  theme: theme,
+                  decoration: decoration,
+                ).copyWith(
+                  suffixIcon: _isPasswordType()
+                      ? GestureDetector(
+                          onTap: () => setState(() => hidden = !hidden),
+                          child: Icon(
+                            hidden
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                          ),
+                        )
+                      : null,
+                ),
               ),
             ),
-          ),
-          TitleForm(widget.title),
-        ],
+            TitleForm(widget.title),
+          ],
+        ),
       ),
     );
   }

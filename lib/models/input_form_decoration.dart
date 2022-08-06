@@ -16,6 +16,7 @@ class InputFormDecoration {
     this.titleStyle,
     this.hintStyle,
     this.textStyle,
+    this.inputPadding = EdgeInsets.zero,
     BorderRadius? borderRadius,
   }) : borderRadius = borderRadius ?? BorderRadius.circular(4);
 
@@ -33,4 +34,5 @@ class InputFormDecoration {
   final TextStyle? titleStyle;
   final TextStyle? hintStyle;
   final TextStyle? textStyle;
+  final EdgeInsets inputPadding;
 }

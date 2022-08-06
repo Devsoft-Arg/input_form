@@ -96,77 +96,81 @@ class _ImageInputFieldState extends State<ImageInputField> {
       }
     }
 
-    return FormField(
-      validator: (text) => _validator(text, decoration.nullErrorText),
-      builder: (state) => Column(
-        children: [
-          Stack(
-            children: [
-              Container(
-                height: 59,
-                margin: const EdgeInsets.only(top: 8),
-                decoration: BoxDecoration(
-                  color: decoration.backgroundColor ??
-                      theme.scaffoldBackgroundColor,
-                  border: Border.all(
-                    color: state.hasError
-                        ? decoration.errorBorderColor
-                        : decoration.borderColor,
-                    width: 2,
+    return Padding(
+      padding: decoration.inputPadding,
+      child: FormField(
+        validator: (text) => _validator(text, decoration.nullErrorText),
+        builder: (state) => Column(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 59,
+                  margin: const EdgeInsets.only(top: 8),
+                  decoration: BoxDecoration(
+                    color: decoration.backgroundColor ??
+                        theme.scaffoldBackgroundColor,
+                    border: Border.all(
+                      color: state.hasError
+                          ? decoration.errorBorderColor
+                          : decoration.borderColor,
+                      width: 2,
+                    ),
+                    borderRadius: decoration.borderRadius,
                   ),
-                  borderRadius: decoration.borderRadius,
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => _onTap(inputProvider, FocusScope.of(context)),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 50,
-                          child: Center(
-                            child: Icon(
-                              widget.icon,
-                              color: decoration.iconColor,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () =>
+                          _onTap(inputProvider, FocusScope.of(context)),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 50,
+                            child: Center(
+                              child: Icon(
+                                widget.icon,
+                                color: decoration.iconColor,
+                              ),
                             ),
                           ),
-                        ),
-                        if (selectedImages.isEmpty)
-                          Text(
-                            widget.hint,
-                            style: decoration.hintStyle ??
-                                theme.textTheme.titleMedium?.copyWith(
-                                  color: decoration.hintColor,
-                                ),
-                          )
-                        else
-                          Text(
-                            widget.selectedHint(selectedImages.length),
-                            style: decoration.textStyle ??
-                                theme.textTheme.titleMedium,
-                          ),
-                      ],
+                          if (selectedImages.isEmpty)
+                            Text(
+                              widget.hint,
+                              style: decoration.hintStyle ??
+                                  theme.textTheme.titleMedium?.copyWith(
+                                    color: decoration.hintColor,
+                                  ),
+                            )
+                          else
+                            Text(
+                              widget.selectedHint(selectedImages.length),
+                              style: decoration.textStyle ??
+                                  theme.textTheme.titleMedium,
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              TitleForm(widget.title),
-            ],
-          ),
-          if (state.hasError)
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 8, left: 13),
-                child: Text(
-                  state.errorText!,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: decoration.errorBorderColor,
+                TitleForm(widget.title),
+              ],
+            ),
+            if (state.hasError)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8, left: 13),
+                  child: Text(
+                    state.errorText!,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: decoration.errorBorderColor,
+                    ),
                   ),
                 ),
-              ),
-            )
-        ],
+              )
+          ],
+        ),
       ),
     );
   }

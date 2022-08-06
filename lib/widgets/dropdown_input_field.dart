@@ -98,33 +98,36 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
         return const SizedBox.shrink();
       }
     }
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: cs.CustomDropdownButtonFormField<T>(
-            borderRadius: decoration.borderRadius,
-            value: value,
-            style: decoration.textStyle ?? theme.textTheme.titleMedium,
-            decoration: getInputDecoration(
-              hintText: widget.hint,
-              prefixIcon: widget.icon,
-              theme: theme,
-              decoration: decoration,
-              padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
+    return Padding(
+      padding: decoration.inputPadding,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: cs.CustomDropdownButtonFormField<T>(
+              borderRadius: decoration.borderRadius,
+              value: value,
+              style: decoration.textStyle ?? theme.textTheme.titleMedium,
+              decoration: getInputDecoration(
+                hintText: widget.hint,
+                prefixIcon: widget.icon,
+                theme: theme,
+                decoration: decoration,
+                padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
+              ),
+              validator: (T? text) => _validator(text, inputProvider),
+              onChanged: (T? value) => _onChanged(value, inputProvider),
+              items: widget.values.map<cs.DropdownMenuItem<T>>((item) {
+                return cs.DropdownMenuItem<T>(
+                  value: item.key,
+                  child: Text(item.value),
+                );
+              }).toList(),
             ),
-            validator: (T? text) => _validator(text, inputProvider),
-            onChanged: (T? value) => _onChanged(value, inputProvider),
-            items: widget.values.map<cs.DropdownMenuItem<T>>((item) {
-              return cs.DropdownMenuItem<T>(
-                value: item.key,
-                child: Text(item.value),
-              );
-            }).toList(),
           ),
-        ),
-        TitleForm(widget.title),
-      ],
+          TitleForm(widget.title),
+        ],
+      ),
     );
   }
 

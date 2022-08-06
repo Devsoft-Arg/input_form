@@ -24,6 +24,7 @@ class InputFormApp extends StatelessWidget {
             buttonBackgroundColor: Colors.lightGreen,
             nullErrorText: 'You must complete the field',
             notValidErrorText: 'Not valid text',
+            inputPadding: const EdgeInsets.only(bottom: 12),
           ),
           data: const {
             'text': 10.0,
@@ -40,7 +41,6 @@ class InputFormApp extends StatelessWidget {
                 icon: Icons.home,
                 type: TextInputType.number,
               ),
-              const SizedBox(height: 12),
               DropdownInputField<int>(
                 name: 'dropdown',
                 values: [
@@ -52,29 +52,27 @@ class InputFormApp extends StatelessWidget {
                 hint: 'Enter any of the options',
                 icon: Icons.list_alt,
               ),
-              // const SizedBox(height: 12),
-              // ImageInputField(
-              //   name: 'images',
-              //   title: 'Images',
-              //   hint: 'There are no selected images',
-              //   minFiles: 2,
-              //   minFilesErrorText: 'Must contain at least two images',
-              //   selectedHint: (q) =>
-              //       'You have selected $q image${q > 1 ? 's' : ''}',
-              //   icon: Icons.image,
-              // ),
-              // const SizedBox(height: 12),
-              // FileInputField(
-              //   name: 'files',
-              //   title: 'Files',
-              //   hint: 'No files selected',
-              //   minFiles: 2,
-              //   minFilesErrorText: 'Must contain at least two files',
-              //   selectedHint: (q) =>
-              //       'You have selected $q file${q > 1 ? 's' : ''}',
-              //   icon: Icons.file_copy,
-              // ),
-              // const SizedBox(height: 22),
+              ImageInputField(
+                name: 'images',
+                title: 'Images',
+                hint: 'There are no selected images',
+                minFiles: 2,
+                minFilesErrorText: 'Must contain at least two images',
+                selectedHint: (q) =>
+                    'You have selected $q image${q > 1 ? 's' : ''}',
+                icon: Icons.image,
+              ),
+              FileInputField(
+                name: 'files',
+                title: 'Files',
+                hint: 'No files selected',
+                minFiles: 2,
+                minFilesErrorText: 'Must contain at least two files',
+                selectedHint: (q) =>
+                    'You have selected $q file${q > 1 ? 's' : ''}',
+                icon: Icons.file_copy,
+              ),
+              const SizedBox(height: 10),
               TextFormButton(
                 text: 'Tap',
                 onTap: (data) => data.forEach((key, value) {
