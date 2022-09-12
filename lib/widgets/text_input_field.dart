@@ -71,18 +71,26 @@ class TextInputField<T> extends StatefulWidget {
 }
 
 class _TextInputFieldState<T> extends State<TextInputField> {
+  late final TextEditingController controller;
   bool hidden = true;
+
+  @override
+  void didChangeDependencies() {
+    final inputProvider = context.read<InputProvider>();
+    final initialValue = inputProvider.data[widget.name];
+    controller = TextEditingController();
+
+    if (initialValue != null) {
+      controller.text = '$initialValue';
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();
     final decoration = inputProvider.decoration;
-    final initialValue = inputProvider.data[widget.name];
-    final controller = TextEditingController();
-    if (initialValue != null) {
-      controller.text = '$initialValue';
-    }
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(
