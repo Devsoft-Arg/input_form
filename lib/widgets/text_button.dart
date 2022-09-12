@@ -11,6 +11,7 @@ class TextFormButton extends StatelessWidget {
     Key? key,
     required this.text,
     required this.onTap,
+    this.enabled = true,
   }) : super(key: key);
 
   /// Button text
@@ -20,6 +21,9 @@ class TextFormButton extends StatelessWidget {
   ///
   /// The function return the data entered in the form inputs.
   final Function(Map<String, dynamic> values) onTap;
+
+  /// Set the button as enabled
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -38,12 +42,14 @@ class TextFormButton extends StatelessWidget {
         ),
         fixedSize: MaterialStateProperty.all<Size>(const Size.fromHeight(55)),
       ),
-      onPressed: () {
-        final values = inputProvider.validateAndGetData();
-        if (values != null) {
-          onTap(values);
-        }
-      },
+      onPressed: enabled
+          ? () {
+              final values = inputProvider.validateAndGetData();
+              if (values != null) {
+                onTap(values);
+              }
+            }
+          : null,
       child: Text(
         text,
         style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
