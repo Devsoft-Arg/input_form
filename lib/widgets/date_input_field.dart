@@ -6,7 +6,7 @@ import '../models/condition.dart';
 import '../utils/can_show.dart';
 import 'title_form.dart';
 
-/// Input field for dates and times
+/// Input field for date
 class DateInputField extends StatefulWidget {
   const DateInputField({
     Key? key,
@@ -208,7 +208,6 @@ class _DateInputFieldState extends State<DateInputField> {
       date = result;
       inputProvider.setData(widget.name, date);
 
-      // focusScope.nextFocus();
       setState(() {});
     }
   }
