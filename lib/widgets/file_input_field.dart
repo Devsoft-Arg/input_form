@@ -4,8 +4,6 @@ import 'package:input_form/input_form.dart';
 import 'package:provider/provider.dart';
 
 import '../models/condition.dart';
-import '../utils/can_show.dart';
-import 'title_form.dart';
 
 /// Input field for files
 class FileInputField extends StatefulWidget {
@@ -74,104 +72,28 @@ class _FileInputFieldState extends State<FileInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final inputProvider = Provider.of<InputProvider>(context);
     final decoration = inputProvider.decoration;
+    final key = GlobalKey<InputFieldState>();
 
-    if (widget.showIfAnd != null) {
-      final data = context.select<InputProvider, bool>(
-          (state) => canShowAnd(state.data, widget.showIfAnd!));
-
-      if (!data) {
-        return const SizedBox.shrink();
-      }
-    }
-
-    if (widget.showIfOr != null) {
-      final data = context.select<InputProvider, bool>(
-          (state) => canShowOr(state.data, widget.showIfOr!));
-
-      if (!data) {
-        return const SizedBox.shrink();
-      }
-    }
-
-    return Padding(
-      padding: decoration.inputPadding,
-      child: FormField(
-        validator: (text) => _validator(text, decoration.nullErrorText),
-        builder: (state) => Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: 59,
-                  margin: const EdgeInsets.only(top: 8),
-                  decoration: BoxDecoration(
-                    color: decoration.backgroundColor ??
-                        theme.scaffoldBackgroundColor,
-                    border: Border.all(
-                      color: state.hasError
-                          ? decoration.errorBorderColor
-                          : decoration.borderColor,
-                      width: 2,
-                    ),
-                    borderRadius: decoration.borderRadius,
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () =>
-                          _onTap(inputProvider, FocusScope.of(context)),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 50,
-                            child: Center(
-                              child: Icon(
-                                widget.icon,
-                                color: decoration.iconColor,
-                              ),
-                            ),
-                          ),
-                          if (selectedFiles.isEmpty)
-                            Text(
-                              widget.hint,
-                              style: decoration.hintStyle ??
-                                  theme.textTheme.titleMedium?.copyWith(
-                                    color: decoration.hintColor,
-                                  ),
-                            )
-                          else
-                            Text(
-                              widget.selectedHint(selectedFiles.length),
-                              style: decoration.textStyle ??
-                                  theme.textTheme.titleMedium,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                TitleForm(widget.title),
-              ],
-            ),
-            if (state.hasError)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 13),
-                  child: Text(
-                    state.errorText!,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: decoration.errorBorderColor,
-                    ),
-                  ),
-                ),
-              )
-          ],
-        ),
-      ),
+    return InputField<List<String>>(
+      key: key,
+      validator: (text) => _validator(text, decoration.nullErrorText),
+      name: widget.name,
+      title: widget.title,
+      hint: widget.hint,
+      onTap: _onTap,
+      toStringValue: (value) => widget.selectedHint(value.length),
+      prefixIcon: Icon(widget.icon),
+      suffixIcon: selectedFiles.isNotEmpty
+          ? IconButton(
+              onPressed: () {
+                selectedFiles.clear();
+                key.currentState!.setValue(null);
+              },
+              icon: const Icon(Icons.close),
+            )
+          : null,
     );
   }
 
@@ -188,10 +110,7 @@ class _FileInputFieldState extends State<FileInputField> {
     return null;
   }
 
-  Future<void> _onTap(
-    InputProvider inputProvider,
-    FocusScopeNode focusScope,
-  ) async {
+  Future<void> _onTap(SetValueType setValue) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: widget.allowedExtensions != null ? FileType.custom : FileType.any,
       allowedExtensions: widget.allowedExtensions,
@@ -203,10 +122,10 @@ class _FileInputFieldState extends State<FileInputField> {
       selectedFiles.addAll(
         [for (final path in result.paths) path!],
       );
-      inputProvider.setData(widget.name, selectedFiles);
 
-      focusScope.nextFocus();
-      setState(() {});
+      if (mounted) FocusScope.of(context).nextFocus();
+
+      setValue(selectedFiles);
     }
   }
 }

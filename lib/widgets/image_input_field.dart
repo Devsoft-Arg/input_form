@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../models/condition.dart';
-import '../utils/can_show.dart';
-import 'title_form.dart';
 
 /// Input field for images
 class ImageInputField extends StatefulWidget {
@@ -74,104 +72,28 @@ class _ImageInputFieldState extends State<ImageInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final inputProvider = Provider.of<InputProvider>(context);
     final decoration = inputProvider.decoration;
+    final key = GlobalKey<InputFieldState>();
 
-    if (widget.showIfAnd != null) {
-      final data = context.select<InputProvider, bool>(
-          (state) => canShowAnd(state.data, widget.showIfAnd!));
-
-      if (!data) {
-        return const SizedBox.shrink();
-      }
-    }
-
-    if (widget.showIfOr != null) {
-      final data = context.select<InputProvider, bool>(
-          (state) => canShowOr(state.data, widget.showIfOr!));
-
-      if (!data) {
-        return const SizedBox.shrink();
-      }
-    }
-
-    return Padding(
-      padding: decoration.inputPadding,
-      child: FormField(
-        validator: (text) => _validator(text, decoration.nullErrorText),
-        builder: (state) => Column(
-          children: [
-            Stack(
-              children: [
-                Container(
-                  height: 59,
-                  margin: const EdgeInsets.only(top: 8),
-                  decoration: BoxDecoration(
-                    color: decoration.backgroundColor ??
-                        theme.scaffoldBackgroundColor,
-                    border: Border.all(
-                      color: state.hasError
-                          ? decoration.errorBorderColor
-                          : decoration.borderColor,
-                      width: 2,
-                    ),
-                    borderRadius: decoration.borderRadius,
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () =>
-                          _onTap(inputProvider, FocusScope.of(context)),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 50,
-                            child: Center(
-                              child: Icon(
-                                widget.icon,
-                                color: decoration.iconColor,
-                              ),
-                            ),
-                          ),
-                          if (selectedImages.isEmpty)
-                            Text(
-                              widget.hint,
-                              style: decoration.hintStyle ??
-                                  theme.textTheme.titleMedium?.copyWith(
-                                    color: decoration.hintColor,
-                                  ),
-                            )
-                          else
-                            Text(
-                              widget.selectedHint(selectedImages.length),
-                              style: decoration.textStyle ??
-                                  theme.textTheme.titleMedium,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                TitleForm(widget.title),
-              ],
-            ),
-            if (state.hasError)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 8, left: 13),
-                  child: Text(
-                    state.errorText!,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: decoration.errorBorderColor,
-                    ),
-                  ),
-                ),
-              )
-          ],
-        ),
-      ),
+    return InputField<List<String>>(
+      key: key,
+      validator: (text) => _validator(text, decoration.nullErrorText),
+      name: widget.name,
+      title: widget.title,
+      hint: widget.hint,
+      onTap: _onTap,
+      toStringValue: (value) => widget.selectedHint(value.length),
+      prefixIcon: Icon(widget.icon),
+      suffixIcon: selectedImages.isNotEmpty
+          ? IconButton(
+              onPressed: () {
+                selectedImages.clear();
+                key.currentState!.setValue(null);
+              },
+              icon: const Icon(Icons.close),
+            )
+          : null,
     );
   }
 
@@ -188,10 +110,7 @@ class _ImageInputFieldState extends State<ImageInputField> {
     return null;
   }
 
-  Future<void> _onTap(
-    InputProvider inputProvider,
-    FocusScopeNode focusScope,
-  ) async {
+  Future<void> _onTap(SetValueType setValue) async {
     final result = await AssetPicker.pickAssets(
       context,
       pickerConfig: AssetPickerConfig(
@@ -205,10 +124,10 @@ class _ImageInputFieldState extends State<ImageInputField> {
       selectedImages.addAll(
         [for (final asset in result) (await asset.file)!.path],
       );
-      inputProvider.setData(widget.name, selectedImages);
 
-      focusScope.nextFocus();
-      setState(() {});
+      if (mounted) FocusScope.of(context).nextFocus();
+
+      setValue(selectedImages);
     }
   }
 }
