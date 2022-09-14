@@ -5,19 +5,22 @@ import 'package:provider/provider.dart';
 import '../models/condition.dart';
 import '../utils/can_show.dart';
 
+typedef SetValueType<T> = void Function(T? value);
+
 /// Input field for date
-class DateInputFieldE extends StatefulWidget {
-  const DateInputFieldE({
+class InputField<T> extends StatefulWidget {
+  const InputField({
     Key? key,
     required this.name,
     required this.title,
     required this.hint,
-    required this.icon,
-    required this.dateFormat,
-    required this.firstDate,
-    required this.lastDate,
-    this.initialDate,
+    required this.prefixIcon,
+    required this.onTap,
+    this.suffixIcon,
+    this.validator,
+    this.toStringValue,
     this.nullable = false,
+    this.writable = false,
     this.showIfAnd,
     this.showIfOr,
   })  : assert(
@@ -35,25 +38,36 @@ class DateInputFieldE extends StatefulWidget {
   /// Hint text of widget.
   final String hint;
 
-  /// Leading icon of widget.
-  final IconData icon;
+  /// Prefix icon of widget.
+  final Widget prefixIcon;
 
-  /// Set a format for the date text
-  final DateFormat dateFormat;
+  /// Suffix icon of widget.
+  final Widget? suffixIcon;
 
-  /// First day of calendar picker
-  final DateTime firstDate;
+  /// Validator function that receives the entered text and allows
+  /// an error to be returned.
+  ///
+  /// If it returns null, it is ignored.
+  final String? Function(String? text)? validator;
 
-  /// Last day of calendar picker
-  final DateTime lastDate;
+  /// Validator function that receives value and to string
+  ///
+  /// If it returns null, it is ignored.
+  final String Function(T value)? toStringValue;
 
-  /// Selected day of calendar picker
-  final DateTime? initialDate;
+  /// Value set function that receives a new value and
+  /// displays it in the input field
+  final Function(SetValueType setValue) onTap;
 
   /// Allows the entered text to be null or empty.
   ///
   /// By default is false.
   final bool nullable;
+
+  /// Allows to write text
+  ///
+  /// By default is false.
+  final bool writable;
 
   /// Check the conditions contained in the list with 'and'
   /// to show or not the widget.
@@ -64,31 +78,37 @@ class DateInputFieldE extends StatefulWidget {
   final List<Condition>? showIfOr;
 
   @override
-  State<DateInputFieldE> createState() => _DateInputFieldState();
+  State<InputField<T>> createState() => InputFieldState<T>();
 }
 
-class _DateInputFieldState extends State<DateInputFieldE> {
-  DateTime? date;
+class InputFieldState<T> extends State<InputField<T>> {
   late final TextEditingController controller;
+  late InputProvider inputProvider;
 
   @override
   void initState() {
-    final inputProvider = context.read<InputProvider>();
-    final initialValue = inputProvider.data[widget.name];
+    super.initState();
     controller = TextEditingController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    inputProvider = context.read<InputProvider>();
+    final initialValue = inputProvider.data[widget.name];
 
     if (initialValue != null) {
-      date = inputProvider.data[widget.name];
-      controller.text = inputProvider.data[widget.name];
+      controller.text =
+          widget.toStringValue?.call(initialValue) ?? '$initialValue';
     }
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final inputProvider = Provider.of<InputProvider>(context);
     final decoration = inputProvider.decoration;
+    final inputDecorationTheme = theme.inputDecorationTheme;
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(
@@ -108,50 +128,28 @@ class _DateInputFieldState extends State<DateInputFieldE> {
       }
     }
 
-    final inputDecorationTheme = theme.inputDecorationTheme;
-
     return Padding(
       padding: decoration.inputPadding,
       child: TextFormField(
         controller: controller,
-        readOnly: true,
-        validator: (text) => _validator(text, decoration.nullErrorText),
-        onTap: () => _onTap(inputProvider, FocusScope.of(context)),
+        readOnly: !widget.writable,
+        validator: widget.validator,
+        onTap: () => widget.onTap(setValue as SetValueType),
         decoration: const InputDecoration()
             .applyDefaults(inputDecorationTheme)
             .copyWith(
+              labelText: widget.title,
               hintText: widget.hint,
-              prefixIcon: Icon(widget.icon),
+              prefixIcon: widget.prefixIcon,
+              suffixIcon: widget.suffixIcon,
             ),
       ),
     );
   }
 
-  String? _validator(_, String? nullErrorText) {
-    if (widget.nullable) return null;
-
-    if (date == null) return nullErrorText;
-
-    return null;
-  }
-
-  Future<void> _onTap(
-    InputProvider inputProvider,
-    FocusScopeNode focusScope,
-  ) async {
-    DateTime? result = await showDatePicker(
-      context: context,
-      initialDate: widget.initialDate ?? DateTime.now(),
-      firstDate: widget.firstDate,
-      lastDate: widget.lastDate,
-    );
-
-    if (result != null) {
-      date = result;
-      inputProvider.setData(widget.name, date);
-      controller.text = widget.dateFormat.format(date!);
-
-      setState(() {});
-    }
+  void setValue(T? value) {
+    controller.text =
+        value != null ? widget.toStringValue?.call(value) ?? '$value' : '';
+    inputProvider.setData(widget.name, value);
   }
 }
