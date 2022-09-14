@@ -27,21 +27,8 @@ class TextFormButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();
-    final decoration = inputProvider.decoration;
     return TextButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateColor.resolveWith(
-          (states) => decoration.buttonBackgroundColor,
-        ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: decoration.borderRadius,
-          ),
-        ),
-        fixedSize: MaterialStateProperty.all<Size>(const Size.fromHeight(55)),
-      ),
       onPressed: enabled
           ? () {
               final values = inputProvider.validateAndGetData();
@@ -50,10 +37,7 @@ class TextFormButton extends StatelessWidget {
               }
             }
           : null,
-      child: Text(
-        text,
-        style: theme.textTheme.titleMedium?.copyWith(color: Colors.white),
-      ),
+      child: Text(text),
     );
   }
 }
