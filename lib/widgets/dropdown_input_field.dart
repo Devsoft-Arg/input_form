@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:input_form/input_form.dart';
-import 'package:input_form/utils/input_decoration.dart';
 import 'package:provider/provider.dart';
 
 import '../models/condition.dart';
 import '../utils/can_show.dart';
 import 'custom_dropdown_button.dart' as cs;
-import 'title_form.dart';
+
+const _outlineDefaultPadding = EdgeInsets.fromLTRB(12, 20, 12, 20);
+const _underlineDefaultPadding = EdgeInsets.fromLTRB(12, 12, 12, 12);
 
 /// Dropdown input field with options
 class DropdownInputField<T> extends StatefulWidget {
@@ -62,24 +63,32 @@ class DropdownInputField<T> extends StatefulWidget {
 }
 
 class _DropdownInputFieldState<T> extends State<DropdownInputField> {
+  late InputProvider inputProvider;
   T? value;
 
   @override
   void didChangeDependencies() {
-    final data = context.read<InputProvider>().data;
-    final initialValue = data[widget.name];
+    super.didChangeDependencies();
+
+    inputProvider = context.read<InputProvider>();
+    final initialValue = inputProvider.data[widget.name];
     final values = widget.values.map((e) => e.key);
     if (values.contains(initialValue)) {
       value = initialValue;
     }
-    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final inputProvider = context.read<InputProvider>();
     final decoration = inputProvider.decoration;
+    final inputDecorationTheme = theme.inputDecorationTheme;
+    final contentPadding = inputDecorationTheme.contentPadding ??
+        (inputDecorationTheme.border != null
+            ? (inputDecorationTheme.border!.isOutline
+                ? _outlineDefaultPadding
+                : _underlineDefaultPadding)
+            : null);
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(
@@ -98,45 +107,46 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
         return const SizedBox.shrink();
       }
     }
+
     return Padding(
       padding: decoration.inputPadding,
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: cs.CustomDropdownButtonFormField<T>(
-              borderRadius: decoration.borderRadius,
-              value: value,
-              style: decoration.textStyle ?? theme.textTheme.titleMedium,
-              decoration: getInputDecoration(
-                hintText: widget.hint,
-                prefixIcon: widget.icon,
-                theme: theme,
-                decoration: decoration,
-                padding: const EdgeInsets.fromLTRB(12, 22, 12, 14),
+      child: cs.CustomDropdownButtonFormField<T>(
+        borderRadius: inputDecorationTheme.border?.isOutline ?? false
+            ? (inputDecorationTheme.border as OutlineInputBorder).borderRadius
+            : (inputDecorationTheme.border as UnderlineInputBorder)
+                .borderRadius,
+        value: value,
+        isExpanded: true,
+        decoration: const InputDecoration()
+            .applyDefaults(inputDecorationTheme)
+            .copyWith(
+              contentPadding: contentPadding?.subtract(
+                const EdgeInsets.symmetric(vertical: 2.5),
               ),
-              validator: (T? text) => _validator(text, inputProvider),
-              onChanged: (T? value) => _onChanged(value, inputProvider),
-              items: widget.values.map<cs.DropdownMenuItem<T>>((item) {
-                return cs.DropdownMenuItem<T>(
-                  value: item.key,
-                  child: Text(item.value),
-                );
-              }).toList(),
+              labelText: widget.title,
+              hintText: widget.hint,
+              prefixIcon: Icon(widget.icon),
             ),
-          ),
-          TitleForm(widget.title),
-        ],
+        alignment: Alignment.topCenter,
+        validator: (T? text) => _validator(text, inputProvider),
+        onChanged: (T? value) => _onChanged(value, inputProvider),
+        // onTap: () {
+        //   FocusManager.instance.primaryFocus?.unfocus();
+        // },
+        items: widget.values.map<cs.DropdownMenuItem<T>>((item) {
+          return cs.DropdownMenuItem<T>(
+            value: item.key,
+            child: Text(item.value),
+          );
+        }).toList(),
       ),
     );
   }
 
   void _onChanged(T? newValue, InputProvider inputProvider) {
     FocusScope.of(context).nextFocus();
-    setState(() {
-      value = newValue;
-      inputProvider.setData(widget.name, value);
-    });
+    value = newValue;
+    inputProvider.setData(widget.name, value);
   }
 
   String? _validator(T? text, InputProvider inputProvider) {
