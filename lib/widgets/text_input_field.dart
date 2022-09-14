@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../models/condition.dart';
 import '../utils/can_show.dart';
-import '../utils/input_decoration.dart';
-import 'title_form.dart';
 
 /// Input field for text
 class TextInputField<T> extends StatefulWidget {
@@ -71,11 +69,13 @@ class TextInputField<T> extends StatefulWidget {
 }
 
 class _TextInputFieldState<T> extends State<TextInputField> {
-  late final TextEditingController controller;
+  late TextEditingController controller;
   bool hidden = true;
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
+
     final inputProvider = context.read<InputProvider>();
     final initialValue = inputProvider.data[widget.name];
     controller = TextEditingController();
@@ -83,7 +83,6 @@ class _TextInputFieldState<T> extends State<TextInputField> {
     if (initialValue != null) {
       controller.text = '$initialValue';
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -91,6 +90,7 @@ class _TextInputFieldState<T> extends State<TextInputField> {
     final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();
     final decoration = inputProvider.decoration;
+    final inputDecorationTheme = theme.inputDecorationTheme;
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(
@@ -110,50 +110,35 @@ class _TextInputFieldState<T> extends State<TextInputField> {
       }
     }
 
-    return Theme(
-      data: theme.copyWith(
-        primaryColor: decoration.selectedIconColor,
-      ),
-      child: Padding(
-        padding: decoration.inputPadding,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: TextFormField(
-                controller: controller,
-                style: decoration.textStyle ?? theme.textTheme.titleMedium,
-                obscureText: hidden && _isPasswordType(),
-                keyboardType: widget.type,
-                textInputAction: getTextInputAction(widget.type),
-                textCapitalization: getTextCapitalization(widget.type),
-                minLines: 1,
-                maxLines: _isPasswordType() ? 1 : 10,
-                validator: (text) => _validator(text, inputProvider),
-                onChanged: (text) => _onChanged(text, inputProvider),
-                onEditingComplete: () => FocusScope.of(context).nextFocus(),
-                decoration: getInputDecoration(
-                  hintText: widget.hint,
-                  prefixIcon: widget.icon,
-                  theme: theme,
-                  decoration: decoration,
-                ).copyWith(
-                  suffixIcon: _isPasswordType()
-                      ? GestureDetector(
-                          onTap: () => setState(() => hidden = !hidden),
-                          child: Icon(
-                            hidden
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                          ),
-                        )
-                      : null,
-                ),
-              ),
+    return Padding(
+      padding: decoration.inputPadding,
+      child: TextFormField(
+        controller: controller,
+        obscureText: hidden && _isPasswordType(),
+        keyboardType: widget.type,
+        textInputAction: getTextInputAction(widget.type),
+        textCapitalization: getTextCapitalization(widget.type),
+        minLines: 1,
+        maxLines: _isPasswordType() ? 1 : 10,
+        validator: (text) => _validator(text, inputProvider),
+        onChanged: (text) => _onChanged(text, inputProvider),
+        onEditingComplete: () => FocusScope.of(context).nextFocus(),
+        decoration: const InputDecoration()
+            .applyDefaults(inputDecorationTheme)
+            .copyWith(
+              labelText: widget.title,
+              hintText: widget.hint,
+              prefixIcon: _isPasswordType()
+                  ? GestureDetector(
+                      onTap: () => setState(() => hidden = !hidden),
+                      child: Icon(
+                        hidden
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                      ),
+                    )
+                  : Icon(widget.icon),
             ),
-            TitleForm(widget.title),
-          ],
-        ),
       ),
     );
   }
