@@ -68,10 +68,22 @@ class DateInputField extends StatefulWidget {
 
 class _DateInputFieldState extends State<DateInputField> {
   DateTime? date;
+  late InputProvider inputProvider;
+
+  @override
+  void didChangeDependencies() {
+    inputProvider = Provider.of<InputProvider>(context);
+    final initialValue = inputProvider.data[widget.name];
+
+    if (initialValue != null) {
+      date = initialValue;
+    }
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final inputProvider = Provider.of<InputProvider>(context);
     final decoration = inputProvider.decoration;
 
     return InputField<DateTime>(

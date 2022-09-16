@@ -68,7 +68,20 @@ class ImageInputField extends StatefulWidget {
 }
 
 class _ImageInputFieldState extends State<ImageInputField> {
-  final selectedImages = <String>[];
+  List<String> selectedImages = <String>[];
+  late InputProvider inputProvider;
+
+  @override
+  void didChangeDependencies() {
+    inputProvider = Provider.of<InputProvider>(context);
+    final initialValue = inputProvider.data[widget.name];
+
+    if (initialValue != null) {
+      selectedImages = initialValue;
+    }
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +133,7 @@ class _ImageInputFieldState extends State<ImageInputField> {
     );
 
     if (result != null) {
-      selectedImages.clear();
-      selectedImages.addAll(
-        [for (final asset in result) (await asset.file)!.path],
-      );
+      selectedImages = [for (final asset in result) (await asset.file)!.path];
 
       if (mounted) FocusScope.of(context).nextFocus();
 

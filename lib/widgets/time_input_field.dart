@@ -56,6 +56,19 @@ class TimeInputField extends StatefulWidget {
 
 class _TimeInputFieldState extends State<TimeInputField> {
   TimeOfDay? time;
+  late InputProvider inputProvider;
+
+  @override
+  void didChangeDependencies() {
+    inputProvider = Provider.of<InputProvider>(context);
+    final initialValue = inputProvider.data[widget.name];
+
+    if (initialValue != null) {
+      time = initialValue;
+    }
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

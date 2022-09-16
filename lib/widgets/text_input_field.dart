@@ -128,7 +128,8 @@ class _TextInputFieldState<T> extends State<TextInputField> {
             .copyWith(
               labelText: widget.title,
               hintText: widget.hint,
-              prefixIcon: _isPasswordType()
+              prefixIcon: Icon(widget.icon),
+              suffixIcon: _isPasswordType()
                   ? GestureDetector(
                       onTap: () => setState(() => hidden = !hidden),
                       child: Icon(
@@ -137,7 +138,7 @@ class _TextInputFieldState<T> extends State<TextInputField> {
                             : Icons.visibility_outlined,
                       ),
                     )
-                  : Icon(widget.icon),
+                  : null,
             ),
       ),
     );

@@ -68,7 +68,20 @@ class FileInputField extends StatefulWidget {
 }
 
 class _FileInputFieldState extends State<FileInputField> {
-  final selectedFiles = <String>[];
+  List<String> selectedFiles = <String>[];
+  late InputProvider inputProvider;
+
+  @override
+  void didChangeDependencies() {
+    inputProvider = Provider.of<InputProvider>(context);
+    final initialValue = inputProvider.data[widget.name];
+
+    if (initialValue != null) {
+      selectedFiles = initialValue;
+    }
+
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,10 +131,7 @@ class _FileInputFieldState extends State<FileInputField> {
     );
 
     if (result != null) {
-      selectedFiles.clear();
-      selectedFiles.addAll(
-        [for (final path in result.paths) path!],
-      );
+      selectedFiles = [for (final path in result.paths) path!];
 
       if (mounted) FocusScope.of(context).nextFocus();
 
