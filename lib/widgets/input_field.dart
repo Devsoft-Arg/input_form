@@ -23,6 +23,7 @@ class InputField<T> extends StatefulWidget {
     this.writable = false,
     this.showIfAnd,
     this.showIfOr,
+    this.showFloatingLabel = true,
   })  : assert(
           showIfAnd == null || showIfOr == null,
           'Passing nullableIfAnd and nullableIfOr at the same time is not allowed.',
@@ -76,6 +77,9 @@ class InputField<T> extends StatefulWidget {
   /// Check the conditions contained in the list with 'or'
   /// to show or not the widget.
   final List<Condition>? showIfOr;
+
+  /// Allows the floating tag to be displayed.
+  final bool showFloatingLabel;
 
   @override
   State<InputField<T>> createState() => InputFieldState<T>();
@@ -143,6 +147,9 @@ class InputFieldState<T> extends State<InputField<T>> {
               hintText: widget.hint,
               prefixIcon: widget.prefixIcon,
               suffixIcon: widget.suffixIcon,
+              floatingLabelBehavior: !widget.showFloatingLabel
+                  ? FloatingLabelBehavior.never
+                  : null,
             ),
       ),
     );
