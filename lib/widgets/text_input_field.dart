@@ -17,6 +17,7 @@ class TextInputField<T> extends StatefulWidget {
     this.validator,
     this.showIfAnd,
     this.showIfOr,
+    this.readOnly = false,
     super.key,
   })  : assert(
           showIfAnd == null || showIfOr == null,
@@ -63,6 +64,9 @@ class TextInputField<T> extends StatefulWidget {
   /// Check the conditions contained in the list with 'or'
   /// to show or not the widget.
   final List<Condition>? showIfOr;
+
+  /// Set the widget read-only
+  final bool readOnly;
 
   @override
   State<TextInputField> createState() => _TextInputFieldState<T>();
@@ -124,6 +128,7 @@ class _TextInputFieldState<T> extends State<TextInputField> {
         onChanged: (text) => _onChanged(text, inputProvider),
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
         style: decoration.style,
+        readOnly: widget.readOnly,
         decoration: const InputDecoration()
             .applyDefaults(inputDecorationTheme)
             .copyWith(
