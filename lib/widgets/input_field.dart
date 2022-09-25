@@ -107,7 +107,7 @@ class InputFieldState<T> extends State<InputField<T>> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final decoration = inputProvider.decoration;
+    final decoration = InputFormDecoration.of(context);
     final inputDecorationTheme = theme.inputDecorationTheme;
 
     if (widget.showIfAnd != null) {
@@ -135,6 +135,7 @@ class InputFieldState<T> extends State<InputField<T>> {
         readOnly: !widget.writable,
         validator: widget.validator,
         onTap: () => widget.onTap(setValue as SetValueType),
+        style: decoration.style,
         decoration: const InputDecoration()
             .applyDefaults(inputDecorationTheme)
             .copyWith(

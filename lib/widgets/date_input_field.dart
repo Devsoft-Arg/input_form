@@ -84,7 +84,7 @@ class _DateInputFieldState extends State<DateInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final decoration = inputProvider.decoration;
+    final decoration = InputFormDecoration.of(context);
 
     return InputField<DateTime>(
       name: widget.name,

@@ -45,7 +45,7 @@ class TextInputField<T> extends StatefulWidget {
   /// Validator function that receives the entered text and allows
   /// an error to be returned.
   ///
-  /// If it returns non-null text, [InputFormDecoration.nullErrorText]
+  /// If it returns non-null text, [InputFormDecorationData.nullErrorText]
   /// will be show as an error.
   ///
   /// If it returns null, it is ignored.
@@ -89,8 +89,8 @@ class _TextInputFieldState<T> extends State<TextInputField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final inputProvider = context.read<InputProvider>();
-    final decoration = inputProvider.decoration;
     final inputDecorationTheme = theme.inputDecorationTheme;
+    final decoration = InputFormDecoration.of(context);
 
     if (widget.showIfAnd != null) {
       final data = context.select<InputProvider, bool>(
@@ -120,9 +120,10 @@ class _TextInputFieldState<T> extends State<TextInputField> {
         textCapitalization: getTextCapitalization(widget.type),
         minLines: 1,
         maxLines: _isPasswordType() ? 1 : 10,
-        validator: (text) => _validator(text, inputProvider),
+        validator: (text) => _validator(text, inputProvider, decoration),
         onChanged: (text) => _onChanged(text, inputProvider),
         onEditingComplete: () => FocusScope.of(context).nextFocus(),
+        style: decoration.style,
         decoration: const InputDecoration()
             .applyDefaults(inputDecorationTheme)
             .copyWith(
@@ -154,8 +155,11 @@ class _TextInputFieldState<T> extends State<TextInputField> {
     }
   }
 
-  String? _validator(String? text, InputProvider inputProvider) {
-    final decoration = inputProvider.decoration;
+  String? _validator(
+    String? text,
+    InputProvider inputProvider,
+    InputFormDecorationData decoration,
+  ) {
     final data = inputProvider.data;
     if (widget.nullable) return null;
 

@@ -73,7 +73,7 @@ class _TimeInputFieldState extends State<TimeInputField> {
   @override
   Widget build(BuildContext context) {
     final inputProvider = Provider.of<InputProvider>(context);
-    final decoration = inputProvider.decoration;
+    final decoration = InputFormDecoration.of(context);
 
     return InputField<TimeOfDay>(
       name: widget.name,

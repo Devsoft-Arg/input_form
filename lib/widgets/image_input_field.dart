@@ -86,7 +86,7 @@ class _ImageInputFieldState extends State<ImageInputField> {
   @override
   Widget build(BuildContext context) {
     final inputProvider = Provider.of<InputProvider>(context);
-    final decoration = inputProvider.decoration;
+    final decoration = InputFormDecoration.of(context);
     final key = GlobalKey<InputFieldState>();
 
     return InputField<List<String>>(

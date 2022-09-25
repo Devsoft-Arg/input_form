@@ -81,7 +81,7 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final decoration = inputProvider.decoration;
+    final decoration = InputFormDecoration.of(context);
     final inputDecorationTheme = theme.inputDecorationTheme;
     final contentPadding = inputDecorationTheme.contentPadding ??
         (inputDecorationTheme.border != null
@@ -128,11 +128,9 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
               prefixIcon: Icon(widget.icon),
             ),
         alignment: Alignment.topCenter,
-        validator: (T? text) => _validator(text, inputProvider),
+        validator: (T? text) => _validator(text, decoration),
         onChanged: (T? value) => _onChanged(value, inputProvider),
-        // onTap: () {
-        //   FocusManager.instance.primaryFocus?.unfocus();
-        // },
+        style: decoration.style,
         items: widget.values.map<cs.DropdownMenuItem<T>>((item) {
           return cs.DropdownMenuItem<T>(
             value: item.key,
@@ -149,11 +147,11 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
     inputProvider.setData(widget.name, value);
   }
 
-  String? _validator(T? text, InputProvider inputProvider) {
+  String? _validator(T? text, InputFormDecorationData decoration) {
     if (widget.nullable) return null;
 
     if (text == null || text == '') {
-      return inputProvider.decoration.nullErrorText;
+      return decoration.nullErrorText;
     }
 
     return null;
