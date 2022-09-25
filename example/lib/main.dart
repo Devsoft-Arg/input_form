@@ -21,23 +21,26 @@ class InputFormApp extends StatelessWidget {
             nullErrorText: 'You must complete the field',
             notValidErrorText: 'Not valid text',
             inputPadding: const EdgeInsets.only(bottom: 12),
+            style: TextStyle(color: Colors.green),
           ),
           child: Theme(
             data: Theme.of(context).copyWith(
               inputDecorationTheme: InputDecorationTheme(
-                border: OutlineInputBorder(
+                border: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(width: 2, color: Colors.grey),
                 ),
-                enabledBorder: OutlineInputBorder(
+                enabledBorder: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(width: 2, color: Colors.grey),
                 ),
-                focusedBorder: OutlineInputBorder(
+                focusedBorder: UnderlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: const BorderSide(width: 2),
                 ),
                 filled: true,
+                hintStyle: TextStyle(color: Colors.red),
+                labelStyle: TextStyle(color: Colors.yellow),
               ),
               textButtonTheme: TextButtonThemeData(
                 style: ButtonStyle(
@@ -60,6 +63,7 @@ class InputFormApp extends StatelessWidget {
                 'time': TimeOfDay.now(),
                 'files': const ['file1', 'file2'],
                 'images': const ['image1', 'image2'],
+                'boolean': true,
               },
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 22),
@@ -71,6 +75,7 @@ class InputFormApp extends StatelessWidget {
                     hint: 'Enter text',
                     icon: Icons.home,
                     type: TextInputType.number,
+                    readOnly: true,
                   ),
                   DropdownInputField<int>(
                     name: 'dropdown',
@@ -117,6 +122,13 @@ class InputFormApp extends StatelessWidget {
                     selectedHint: (q) =>
                         'You have selected $q image${q > 1 ? 's' : ''}',
                     icon: Icons.image,
+                  ),
+                  const CheckboxInputField(
+                    name: 'boolean',
+                    title: 'Gabinete eléctrico',
+                    icon: Icons.image,
+                    hint: 'Ha sido seleccionado',
+                    selectedHint: 'No Ha sido seleccionado',
                   ),
                   const SizedBox(height: 10),
                   const TextFormButton(
