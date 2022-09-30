@@ -85,7 +85,6 @@ class _FileInputFieldState extends State<FileInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final inputProvider = Provider.of<InputProvider>(context);
     final decoration = InputFormDecoration.of(context);
     final key = GlobalKey<InputFieldState>();
 
@@ -97,7 +96,7 @@ class _FileInputFieldState extends State<FileInputField> {
       hint: widget.hint,
       onTap: _onTap,
       toStringValue: (value) => widget.selectedHint(value.length),
-      prefixIcon: Icon(widget.icon),
+      prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
       suffixIcon: selectedFiles.isNotEmpty
           ? IconButton(
               onPressed: () {

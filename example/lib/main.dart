@@ -21,7 +21,8 @@ class InputFormApp extends StatelessWidget {
             nullErrorText: 'You must complete the field',
             notValidErrorText: 'Not valid text',
             inputPadding: const EdgeInsets.only(bottom: 12),
-            style: TextStyle(color: Colors.green),
+            style: const TextStyle(color: Colors.green),
+            leadingIconSize: 10,
           ),
           child: Theme(
             data: Theme.of(context).copyWith(

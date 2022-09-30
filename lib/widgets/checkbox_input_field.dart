@@ -69,6 +69,7 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
   @override
   Widget build(BuildContext context) {
     final inputProvider = Provider.of<InputProvider>(context);
+    final decoration = InputFormDecoration.of(context);
     final key = GlobalKey<InputFieldState>();
 
     return InputField<bool>(
@@ -80,7 +81,7 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
           (value ? widget.hint : widget.selectedHint) ?? widget.title,
       onTap: _onTap,
       showFloatingLabel: widget.hint != null,
-      prefixIcon: Icon(widget.icon),
+      prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
       suffixIcon: Checkbox(
         onChanged: (value) {
           inputProvider.setData(widget.name, value);

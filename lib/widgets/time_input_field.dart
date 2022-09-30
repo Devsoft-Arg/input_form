@@ -72,14 +72,13 @@ class _TimeInputFieldState extends State<TimeInputField> {
 
   @override
   Widget build(BuildContext context) {
-    final inputProvider = Provider.of<InputProvider>(context);
     final decoration = InputFormDecoration.of(context);
 
     return InputField<TimeOfDay>(
       name: widget.name,
       title: widget.title,
       hint: widget.hint,
-      prefixIcon: Icon(widget.icon),
+      prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
       onTap: _onTap,
       validator: (text) => _validator(text, decoration.nullErrorText),
       toStringValue: (time) => time.format(context),

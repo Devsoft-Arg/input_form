@@ -96,7 +96,7 @@ class _ImageInputFieldState extends State<ImageInputField> {
       hint: widget.hint,
       onTap: _onTap,
       toStringValue: (value) => widget.selectedHint(value.length),
-      prefixIcon: Icon(widget.icon),
+      prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
       suffixIcon: selectedImages.isNotEmpty
           ? IconButton(
               onPressed: () {

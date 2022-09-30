@@ -7,10 +7,12 @@ class InputFormDecorationData {
     this.notValidErrorText,
     this.inputPadding = EdgeInsets.zero,
     this.style,
+    this.leadingIconSize,
   });
 
   final String? nullErrorText;
   final String? notValidErrorText;
   final EdgeInsets inputPadding;
   final TextStyle? style;
+  final double? leadingIconSize;
 }

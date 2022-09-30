@@ -125,7 +125,7 @@ class _DropdownInputFieldState<T> extends State<DropdownInputField> {
               ),
               labelText: widget.title,
               hintText: widget.hint,
-              prefixIcon: Icon(widget.icon),
+              prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
             ),
         alignment: Alignment.topCenter,
         validator: (T? text) => _validator(text, decoration),

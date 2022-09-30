@@ -134,7 +134,7 @@ class _TextInputFieldState<T> extends State<TextInputField> {
             .copyWith(
               labelText: widget.title,
               hintText: widget.hint,
-              prefixIcon: Icon(widget.icon),
+              prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
               suffixIcon: _isPasswordType()
                   ? GestureDetector(
                       onTap: () => setState(() => hidden = !hidden),

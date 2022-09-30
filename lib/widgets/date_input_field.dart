@@ -90,7 +90,7 @@ class _DateInputFieldState extends State<DateInputField> {
       name: widget.name,
       title: widget.title,
       hint: widget.hint,
-      prefixIcon: Icon(widget.icon),
+      prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
       onTap: (setValue) => _onTap(setValue),
       toStringValue: (value) => widget.dateFormat.format(value),
       validator: (text) => _validator(text, decoration.nullErrorText),
