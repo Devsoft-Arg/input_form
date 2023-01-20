@@ -78,6 +78,8 @@ class _TimeInputFieldState extends State<TimeInputField> {
       name: widget.name,
       title: widget.title,
       hint: widget.hint,
+      showIfOr: widget.showIfOr,
+      showIfAnd: widget.showIfAnd,
       prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
       onTap: _onTap,
       validator: (text) => _validator(text, decoration.nullErrorText),

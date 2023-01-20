@@ -77,6 +77,8 @@ class _CheckboxInputFieldState extends State<CheckboxInputField> {
       hint: '',
       name: widget.name,
       title: widget.title,
+      showIfOr: widget.showIfOr,
+      showIfAnd: widget.showIfAnd,
       toStringValue: (value) =>
           (value ? widget.hint : widget.selectedHint) ?? widget.title,
       onTap: _onTap,

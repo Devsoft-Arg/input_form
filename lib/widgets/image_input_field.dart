@@ -94,6 +94,8 @@ class _ImageInputFieldState extends State<ImageInputField> {
       name: widget.name,
       title: widget.title,
       hint: widget.hint,
+      showIfOr: widget.showIfOr,
+      showIfAnd: widget.showIfAnd,
       onTap: _onTap,
       toStringValue: (value) => widget.selectedHint(value.length),
       prefixIcon: Icon(widget.icon, size: decoration.leadingIconSize),
