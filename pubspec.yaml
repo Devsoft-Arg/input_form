@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   provider: ^6.0.3
-  wechat_assets_picker: ^7.3.2
+  wechat_assets_picker: ^8.4.1
   file_picker: ^4.6.1
   intl: ^0.17.0
 
